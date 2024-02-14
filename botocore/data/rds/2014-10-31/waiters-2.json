@@ -407,6 +407,92 @@
           "argument": "DBSnapshots[].Status"
         }
       ]
+    },
+    "DBBlueGreenDeploymentSwitchOverCompleted": {
+      "operation": "DescribeBlueGreenDeployments",
+      "delay": 15,
+      "maxAttempts": 40,
+      "acceptors": [
+        {
+          "expected": "SWITCHOVER_IN_PROGRESS",
+          "matcher": "pathAll",
+          "state": "retry",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "SWITCHOVER_COMPLETED",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "SWITCHOVER_FAILED",
+          "matcher": "pathAll",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "PROVISIONING",
+          "matcher": "pathAll",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "INVALID_CONFIGURATION",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "DELETING",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": true,
+          "matcher": "path",
+          "state": "failure",
+          "argument": "length(BlueGreenDeployments[]) == `0`"
+        }
+      ]
+    },
+    "DBBlueGreenDeploymentCompleted": {
+      "operation": "DescribeBlueGreenDeployments",
+      "delay": 30,
+      "maxAttempts": 120,
+      "acceptors": [
+        {
+          "expected": "PROVISIONING",
+          "matcher": "pathAll",
+          "state": "retry",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "AVAILABLE",
+          "matcher": "pathAll",
+          "state": "success",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "INVALID_CONFIGURATION",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": "DELETING",
+          "matcher": "pathAny",
+          "state": "failure",
+          "argument": "BlueGreenDeployments[].Status"
+        },
+        {
+          "expected": true,
+          "matcher": "path",
+          "state": "failure",
+          "argument": "length(BlueGreenDeployments[]) == `0`"
+        }
+      ]
     }
   }
 }
